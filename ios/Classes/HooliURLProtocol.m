@@ -9,7 +9,6 @@
 #import "HooliURLProtocol.h"
 #import <Photos/Photos.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "NatManager.h"
 
 static NSString * const URLProtocolHandledKey = @"URLProtocolHandledKey";
 
@@ -19,6 +18,10 @@ static NSString * const URLProtocolHandledKey = @"URLProtocolHandledKey";
 @end
 
 @implementation HooliURLProtocol
+
+#define _FOUR_CC(c1,c2,c3,c4) ((uint32_t)(((c4) << 24) | ((c3) << 16) | ((c2) << 8) | (c1)))
+#define _TWO_CC(c1,c2) ((uint16_t)(((c2) << 8) | (c1)))
+
 
 +(BOOL)canInitWithRequest:(NSURLRequest *)request{
 //    NSURL* theUrl = [request URL];
@@ -116,7 +119,7 @@ static NSString * const URLProtocolHandledKey = @"URLProtocolHandledKey";
             PHFetchResult *result = [PHAsset fetchAssetsWithLocalIdentifiers:@[str] options:nil];
             [[PHImageManager defaultManager] requestImageDataForAsset:result.firstObject options:nil resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
                 
-                    [self.client URLProtocol:self didReceiveResponse:[self getResponse:imageData type:[NSString stringWithFormat:@"image/%@",[NatManager typeForImageData:imageData]]] cacheStoragePolicy:NSURLCacheStorageNotAllowed];
+                    [self.client URLProtocol:self didReceiveResponse:[self getResponse:imageData type:[NSString stringWithFormat:@"image/%@",[HooliURLProtocol typeForImageData:imageData]]] cacheStoragePolicy:NSURLCacheStorageNotAllowed];
                     [self.client URLProtocol:self didLoadData:imageData];
                     [self.client URLProtocolDidFinishLoading:self];
 
@@ -136,7 +139,7 @@ static NSString * const URLProtocolHandledKey = @"URLProtocolHandledKey";
                 NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:((unsigned long)rep.size) error:nil];
                 NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
                 // UI的更新记得放在主线程,要不然等子线程排队过来都不知道什么年代了,会很慢的
-                [self.client URLProtocol:self didReceiveResponse:[self getResponse:data type:[NSString stringWithFormat:@"image/%@",[NatManager typeForImageData:data]]] cacheStoragePolicy:NSURLCacheStorageNotAllowed];
+                [self.client URLProtocol:self didReceiveResponse:[self getResponse:data type:[NSString stringWithFormat:@"image/%@",[HooliURLProtocol typeForImageData:data]]] cacheStoragePolicy:NSURLCacheStorageNotAllowed];
 //
                 [self.client URLProtocol:self didLoadData:data];
                 [self.client URLProtocolDidFinishLoading:self];
@@ -151,7 +154,7 @@ static NSString * const URLProtocolHandledKey = @"URLProtocolHandledKey";
         NSData *data = [NSData dataWithContentsOfFile:str];
         NSString *range = [self.request.allHTTPHeaderFields valueForKey:@"Range"];
         NSInteger statusCode = 206;
-         NSArray *arr= [NatManager stringWithRangeString:range];
+         NSArray *arr= [HooliURLProtocol stringWithRangeString:range];
 //
        long long start = [arr.firstObject longLongValue];
         long long end = [arr.lastObject longLongValue];
@@ -208,7 +211,68 @@ static NSString * const URLProtocolHandledKey = @"URLProtocolHandledKey";
 //     [self.connection cancel];
 }
 
++ (NSString *)typeForImageData:(NSData *)data{
+    
+    
+    if (!data) return @"";
+    uint64_t length = CFDataGetLength((__bridge CFDataRef)data);
+    if (length < 16) return @"";
+    
+    const char *bytes = (char *)CFDataGetBytePtr((__bridge CFDataRef)data);
+    
+    uint32_t magic4 = *((uint32_t *)bytes);
+    switch (magic4) {
+            
+        case _FOUR_CC(0x00, 0x00, 0x01, 0x00): { // ICO
+            return @"ico";
+        } break;
+            
+            
+        case _FOUR_CC('G', 'I', 'F', '8'): { // GIF
+            return @"gif";
+        } break;
+            
+        case _FOUR_CC(0x89, 'P', 'N', 'G'): {  // PNG
+            uint32_t tmp = *((uint32_t *)(bytes + 4));
+            if (tmp == _FOUR_CC('\r', '\n', 0x1A, '\n')) {
+                return @"png";
+            }
+        } break;
+            
+        case _FOUR_CC('R', 'I', 'F', 'F'): { // WebP
+            uint32_t tmp = *((uint32_t *)(bytes + 8));
+            if (tmp == _FOUR_CC('W', 'E', 'B', 'P')) {
+                return @"webp";
+            }
+        } break;
+    }
+    
+    if (memcmp(bytes,"\377\330\377",3) == 0) return @"jpeg";
+    return @"unknow";
+    
+}
 
++ (NSArray *)stringWithRangeString:(NSString *)str
+{
+    if (!str.length )
+    {
+        return nil;
+    }
+    NSMutableArray *resultArr= [NSMutableArray arrayWithCapacity:0];
+    NSString *pattern = @"bytes=(\\d*)-(\\d*)";
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
+    NSArray *matches = [regex matchesInString:str options:0 range:NSMakeRange(0, str.length)];
+    
+    if (matches) {
+        NSTextCheckingResult* match = matches.firstObject;
+        NSString *start = [str substringWithRange:[match rangeAtIndex:1]];
+        NSString *end = [str substringWithRange:[match rangeAtIndex:2]];
+        [resultArr addObject:start];
+        [resultArr addObject:end];
+        
+    }
+    return resultArr;
+}
 
 + (BOOL)requestIsCacheEquivalent:(NSURLRequest *)a toRequest:(NSURLRequest *)b
 {
