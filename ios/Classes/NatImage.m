@@ -10,7 +10,7 @@
 #import <CoreImage/CoreImage.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <ImageIO/ImageIO.h>
-#import <SDWebImageCompat.h>
+#import "SDWebImageCompat.h"
 #import "SDWebImageDownloader.h"
 #import <Photos/Photos.h>
 #import "HooliURLProtocol.h"

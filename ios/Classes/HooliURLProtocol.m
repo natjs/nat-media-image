@@ -58,7 +58,7 @@ static NSString * const URLProtocolHandledKey = @"URLProtocolHandledKey";
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.dateFormat = @"";
 
-    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[self.request URL] statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Connection":@"keep-alive",@"Content-Length":[NSString stringWithFormat:@"%ud",data.length],@"Content-Transfer-Encoding":@"binary",@"Content-Type":type,@"Server":@"Nat"}];
+    NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[self.request URL] statusCode:200 HTTPVersion:@"1.1" headerFields:@{@"Connection":@"keep-alive",@"Content-Length":[NSString stringWithFormat:@"%lld",(long long)data.length],@"Content-Transfer-Encoding":@"binary",@"Content-Type":type,@"Server":@"Nat"}];
     NSLog(@"%@",response);
     return response;
     
@@ -71,11 +71,11 @@ static NSString * const URLProtocolHandledKey = @"URLProtocolHandledKey";
     NSLog(@"%@",[self.request allHTTPHeaderFields]);
     
     if (!start) {
-        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[self.request URL] statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{@"Content-Length":[NSString stringWithFormat:@"%ud",data.length],@"Content-Transfer-Encoding":@"binary",@"Content-Type":type,@"Accept-Range":@"bytes",@"Access-Control-Allow-Origin":@"*",@"Access-Control-Max-Age":@"2592000",@"Cache-Control":@"public, max-age=31536000",@"Content-Disposition":@"inline; filename=\"asset\"",@"Server":@"Nat",@"Proxy-Connection":@"Keep-alive"}];
+        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[self.request URL] statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{@"Content-Length":[NSString stringWithFormat:@"%lld",(long long)data.length],@"Content-Transfer-Encoding":@"binary",@"Content-Type":type,@"Accept-Range":@"bytes",@"Access-Control-Allow-Origin":@"*",@"Access-Control-Max-Age":@"2592000",@"Cache-Control":@"public, max-age=31536000",@"Content-Disposition":@"inline; filename=\"asset\"",@"Server":@"Nat",@"Proxy-Connection":@"Keep-alive"}];
         NSLog(@"%@",response);
         return response;
     }else{
-        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[self.request URL] statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{@"Content-Length":length,@"Content-Transfer-Encoding":@"binary",@"Content-Type":type,@"Content-Range":[NSString stringWithFormat:@"bytes %@-%@/%ud",start,end,data.length],@"Accept-Range":@"bytes",@"Access-Control-Allow-Origin":@"*",@"Access-Control-Max-Age":@"2592000",@"Cache-Control":@"public, max-age=31536000",@"Content-Disposition":@"inline; filename=\"asset\"",@"Server":@"Nat",@"Proxy-Connection":@"Keep-alive"}];
+        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[self.request URL] statusCode:statusCode HTTPVersion:@"1.1" headerFields:@{@"Content-Length":length,@"Content-Transfer-Encoding":@"binary",@"Content-Type":type,@"Content-Range":[NSString stringWithFormat:@"bytes %@-%@/%lld",start,end,(long long)data.length],@"Accept-Range":@"bytes",@"Access-Control-Allow-Origin":@"*",@"Access-Control-Max-Age":@"2592000",@"Cache-Control":@"public, max-age=31536000",@"Content-Disposition":@"inline; filename=\"asset\"",@"Server":@"Nat",@"Proxy-Connection":@"Keep-alive"}];
         NSLog(@"%@",response);
         return response;
  
@@ -164,11 +164,11 @@ static NSString * const URLProtocolHandledKey = @"URLProtocolHandledKey";
         }
         
         NSData* readData;
-        if (end < 0) {
-            readData = [file readDataToEndOfFile];
-        } else {
+//        if (end < 0) {
+//            readData = [file readDataToEndOfFile];
+//        } else {
             readData = [file readDataOfLength:(end - start)];
-        }
+//        }
         [file closeFile];
 //        NSLog(@"readData --- %ld-------",readData.length);
         

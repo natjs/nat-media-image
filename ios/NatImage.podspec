@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "NatImage"
-  s.version      = "0.0.3"
+  s.version      = "0.0.4"
   s.summary      = "Nat.js Module: Image."
 
   # This description is used to generate tags and improve search results.
@@ -77,7 +77,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/Natjs/nat-media-image.git", :tag => "0.0.3" }
+  s.source       = { :git => "https://github.com/Natjs/nat-media-image.git", :tag => "0.0.4" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -88,7 +88,9 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "ios/Classes/*.{h,m}"
+  s.source_files  = "ios/Classes/*.{h,m}", "ios/Classes/MWPhotoBrowser/Pod/*/*.{h,m}"
+
+  s.resources =  "ios/Classes/MWPhotoBrowser/Pod/Assets/*.png"
   # s.exclude_files = "Classes/Exclude"
 
   # s.public_header_files = "Classes/**/*.h"
@@ -114,8 +116,8 @@ Pod::Spec.new do |s|
   #  the lib prefix of their name.
   #
 
-  # s.framework  = "SomeFramework"
-  # s.frameworks = "SomeFramework", "AnotherFramework"
+  s.frameworks = 'ImageIO', 'QuartzCore', 'AssetsLibrary', 'MediaPlayer'
+  s.weak_frameworks = 'Photos'
 
   # s.library   = "iconv"
   # s.libraries = "iconv", "xml2"
@@ -127,9 +129,12 @@ Pod::Spec.new do |s|
   #  where they will only apply to your library. If you depend on other Podspecs
   #  you can include multiple dependencies to ensure it works.
 
-  # s.requires_arc = true
+  s.requires_arc = true
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   s.dependency "TZImagePickerController", "~> 1.7.8"
+  s.dependency 'MBProgressHUD', '~> 0.9'
+  s.dependency 'DACircularProgress', '~> 2.3'
+  s.dependency 'SDWebImage', '~> 3.7', '!= 3.7.2'
 
 end
