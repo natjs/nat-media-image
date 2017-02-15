@@ -1,9 +1,8 @@
 //
 //  HooliURLProtocol.m
-//  WeexDemo
 //
-//  Created by HOOLI-008 on 17/1/11.
-//  Copyright © 2017年 taobao. All rights reserved.
+//  Created by huangyake on 17/1/7.
+//  Copyright © 2017 Nat. All rights reserved.
 //
 
 #import "HooliURLProtocol.h"
