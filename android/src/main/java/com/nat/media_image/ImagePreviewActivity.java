@@ -10,9 +10,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.nat.media_image.zoomimageview.ZoomImageView;
 import com.squareup.picasso.Picasso;
+
 import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 
 /**
@@ -97,7 +100,16 @@ public class ImagePreviewActivity extends AppCompatActivity {
                 Picasso.with(this).load(mPaths[i]).into(zoomImageView);
             } else {
 //                Picasso.with(this).load(new File(mPaths[i])).into(zoomImageView);
-                Bitmap bitmap = BitmapFactory.decodeFile(mPaths[i]);
+                Bitmap bitmap = null;
+                try {
+                    bitmap = BitmapFactory.decodeFile(mPaths[i]);
+                } catch (OutOfMemoryError error) {
+                    error.printStackTrace();
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inSampleSize = 2;
+                    bitmap = BitmapFactory.decodeFile(mPaths[i], options);
+                }
+
                 if (bitmap == null) {
                     EventBus.getDefault().post(new MessageEvent(HLConstant.MEDIA_SRC_NOT_SUPPORTED, HLImageModule.PREVIEW));
                 }

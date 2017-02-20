@@ -106,6 +106,8 @@ javadoc {
         links "http://docs.oracle.com/javase/7/docs/api"
         title javadocName
     }
+
+    failOnError false
 }
 
 

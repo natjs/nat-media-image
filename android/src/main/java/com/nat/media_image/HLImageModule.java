@@ -9,12 +9,17 @@ import android.media.ExifInterface;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
+
+import com.nat.media_image.multi_image_selector.MultiImageSelector;
+import com.nat.media_image.multi_image_selector.MultiImageSelectorActivity;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,8 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import me.nereo.multi_image_selector.MultiImageSelector;
-import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 
 /**
@@ -42,6 +45,7 @@ public class HLImageModule{
     private Context mContext;
     private HLImageModule(Context context){
         mContext = context;
+        EventBus.getDefault().register(this);
     }
 
     public static HLImageModule getInstance(Context context) {
@@ -56,7 +60,7 @@ public class HLImageModule{
         return instance;
     }
 
-    public void pick(Activity activity, HashMap<String, Object> param, final HLModuleResultListener jsCallback){
+    public void pick(Activity activity, HashMap<String, Object> param){
         int limitCount = 9;
         if (param.containsKey("limit")) {
             limitCount = (int) param.get("limit");
@@ -84,7 +88,6 @@ public class HLImageModule{
 
     public void preview(String[] files, HashMap<String, Object> param, HLModuleResultListener listener) {
         mPreviewListener = listener;
-        EventBus.getDefault().register(this);
 
         int currentIndex = 0;
         String style = "dots";
@@ -144,7 +147,16 @@ public class HLImageModule{
         } else {
             HashMap<String, Object> result = new HashMap<>();
             BitmapFactory.Options options = new BitmapFactory.Options();
-            Bitmap bitmap = BitmapFactory.decodeFile(path, options);
+            Bitmap bitmap = null;
+            boolean isSampleSize = false;
+            try {
+                bitmap = BitmapFactory.decodeFile(path, options);
+            } catch (OutOfMemoryError error) {
+                error.printStackTrace();
+                options.inSampleSize = 2;
+                isSampleSize = true;
+                bitmap = BitmapFactory.decodeFile(path, options);
+            }
             if (bitmap == null) {
                 listener.onResult(HLUtil.getError(HLConstant.MEDIA_SRC_NOT_SUPPORTED, HLConstant.MEDIA_SRC_NOT_SUPPORTED_CODE));
                 return;
@@ -157,8 +169,8 @@ public class HLImageModule{
                 result.put("type", type);
                 listener.onResult(result);
             }
-            int outHeight = options.outHeight;
-            int outWidth = options.outWidth;
+            int outHeight = isSampleSize ? options.outHeight*2 : options.outHeight;
+            int outWidth = isSampleSize ? options.outWidth*2 : options.outWidth;
             result.put("width", outWidth);
             result.put("height", outHeight);
             result.put("type", type);
