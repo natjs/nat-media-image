@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "NatImage"
-  s.version      = "0.0.6"
+  s.version      = "0.0.7"
   s.summary      = "Nat.js Module: Image."
 
   # This description is used to generate tags and improve search results.
@@ -77,7 +77,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/Natjs/nat-media-image.git", :tag => "0.0.6" }
+  s.source       = { :git => "https://github.com/natjs/nat-media-image.git", :tag => "0.0.7" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -135,6 +135,6 @@ Pod::Spec.new do |s|
   s.dependency "TZImagePickerController", "~> 1.8.3"
   s.dependency 'MBProgressHUD', '~> 1.0.0'
   s.dependency 'DACircularProgress', '~> 2.3'
-  s.dependency 'SDWebImage', '~> 3.7', '!= 3.7.2'
+  s.dependency 'SDWebImage', '~> 3.7.5'
 
 end
