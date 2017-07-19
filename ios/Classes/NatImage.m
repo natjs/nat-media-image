@@ -2,7 +2,7 @@
 //  NatImage.m
 //
 //  Created by huangyake on 17/1/7.
-//  Copyright © 2017 Nat. All rights reserved.
+//  Copyright © 2017 Instapp. All rights reserved.
 //
 
 #import "NatImage.h"
@@ -36,18 +36,25 @@
 
 - (void)pick:(NSDictionary *)params :(NatCallback)callback{
     NSInteger limit = [params[@"limit"] integerValue];
-    if (limit==0) {
-        limit =9;
+    BOOL showCamera = [params[@"showCamera"] boolValue];
+    
+    if (limit <= 0 || limit > 9) {
+        limit = 9;
     }
+    
     ALAuthorizationStatus author = [ALAssetsLibrary authorizationStatus];
+    
     if (author == ALAuthorizationStatusRestricted || author ==ALAuthorizationStatusDenied){
         //无权限
         callback(nil,@{@"error":@{@"msg":@"MEDIA_IMAGE_PERMISSION_DENIED ",@"code":@1}});
         return;
     }
+    
     TZImagePickerController *picker = [[TZImagePickerController alloc] initWithMaxImagesCount:limit delegate:nil];
     picker.photoWidth = 2048;
     picker.allowPickingVideo = NO;
+    picker.allowTakePicture = showCamera;
+    
     [picker setDidFinishPickingPhotosWithInfosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto, NSArray<NSDictionary *> *infos) {
         NSMutableArray *array = [NSMutableArray arrayWithCapacity:assets.count];
         if ([assets.lastObject isKindOfClass:[ALAsset class]]) {
@@ -340,6 +347,7 @@
     
     return result;
 }
+
 + (NSString *)typeForImageData:(NSData *)data{
     
     

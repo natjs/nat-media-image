@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "NatImage"
-  s.version      = "0.0.5"
+  s.version      = "0.0.6"
   s.summary      = "Nat.js Module: Image."
 
   # This description is used to generate tags and improve search results.
@@ -53,7 +53,7 @@ Pod::Spec.new do |s|
   #  profile URL.
   #
 
-  s.author             = { "nat" => "i@natjs.com" }
+  s.author             = { "nat" => "hi@natjs.com" }
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
@@ -77,7 +77,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/Natjs/nat-media-image.git", :tag => "0.0.5" }
+  s.source       = { :git => "https://github.com/Natjs/nat-media-image.git", :tag => "0.0.6" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -132,8 +132,8 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  s.dependency "TZImagePickerController", "~> 1.7.8"
-  s.dependency 'MBProgressHUD', '~> 0.9'
+  s.dependency "TZImagePickerController", "~> 1.8.3"
+  s.dependency 'MBProgressHUD', '~> 1.0.0'
   s.dependency 'DACircularProgress', '~> 2.3'
   s.dependency 'SDWebImage', '~> 3.7', '!= 3.7.2'
 
