@@ -13,10 +13,10 @@ import java.util.regex.Pattern;
 
 /**
  * Created by xuqinchao on 17/1/11.
- * Copyright (c) 2017 Nat. All rights reserved.
+ * Copyright (c) 2017 Instapp. All rights reserved.
  */
 
-public class HLUtil {
+public class Util {
     public static HashMap<String, HashMap<String, Object>> getError(String msg, int code){
         HashMap<String, HashMap<String, Object>> result = new HashMap<>();
         HashMap<String, Object> param = new HashMap<>();
@@ -51,16 +51,16 @@ public class HLUtil {
         return context.getResources().getDisplayMetrics().density * dp;
     }
 
-    public static File getHLRootFile(){
-        File file = new File(HLConstant.HL_ROOT_PATH);
+    public static File getRootFile(){
+        File file = new File(Constant.ROOT_PATH);
         if (!file.exists()) {
             file.mkdir();
         }
         return file;
     }
 
-    public static File getHLFile(String fileName) throws IOException {
-        File file = new File(getHLRootFile(), fileName);
+    public static File getFile(String fileName) throws IOException {
+        File file = new File(getRootFile(), fileName);
         if (file.exists()) {
             file.delete();
             file.createNewFile();
@@ -70,16 +70,16 @@ public class HLUtil {
         return file;
     }
 
-    public static String getHLRootFilePath(){
-        File file = new File(HLConstant.HL_ROOT_PATH);
+    public static String getRootFilePath(){
+        File file = new File(Constant.ROOT_PATH);
         if (!file.exists()) {
             file.mkdir();
         }
         return file.getAbsolutePath();
     }
 
-    public static String getHLFilePath(String fileName) throws IOException {
-        File file = new File(getHLRootFile(), fileName);
+    public static String getFilePath(String fileName) throws IOException {
+        File file = new File(getRootFile(), fileName);
         if (file.exists()) {
             file.delete();
             file.createNewFile();

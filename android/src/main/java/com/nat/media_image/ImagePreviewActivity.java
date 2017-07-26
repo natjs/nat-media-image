@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 /**
  * Created by xuqinchao on 17/2/7.
- * Copyright (c) 2017 Nat. All rights reserved.
+ * Copyright (c) 2017 Instapp. All rights reserved.
  */
 public class ImagePreviewActivity extends AppCompatActivity {
 
@@ -111,16 +111,16 @@ public class ImagePreviewActivity extends AppCompatActivity {
                 }
 
                 if (bitmap == null) {
-                    EventBus.getDefault().post(new MessageEvent(HLConstant.MEDIA_SRC_NOT_SUPPORTED, HLImageModule.PREVIEW));
+                    EventBus.getDefault().post(new MessageEvent(Constant.MEDIA_SRC_NOT_SUPPORTED, ImageModule.PREVIEW));
                 }
                 zoomImageView.setImageBitmap(bitmap);
             }
 
             if (mStyle.equals("dots")) {
                 ImageView indicator = new ImageView(this);
-                indicator.setImageResource(R.drawable.hl_indicator);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams((int) HLUtil.dp2px(this, 8), (int) HLUtil.dp2px(this, 8));
-                layoutParams.leftMargin = (int) HLUtil.dp2px(this, 4);
+                indicator.setImageResource(R.drawable.indicator);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams((int) Util.dp2px(this, 8), (int) Util.dp2px(this, 8));
+                layoutParams.leftMargin = (int) Util.dp2px(this, 4);
                 indicator.setLayoutParams(layoutParams);
                 mIndicator.addView(indicator);
                 indicator.setEnabled(i == mStartIndex);

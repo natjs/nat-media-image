@@ -15,6 +15,7 @@
 
         <activity android:name=".multi_image_selector.MultiImageSelectorActivity"
             android:configChanges="orientation|screenSize"
+            android:theme="@style/SelectorTheme"
             />
         <activity android:name=".ImagePreviewActivity"
             android:theme="@style/FullscreenTheme"

@@ -33,26 +33,26 @@ import java.util.List;
 
 /**
  * Created by xuqinchao on 17/1/7.
- *  Copyright (c) 2017 Nat. All rights reserved.
+ *  Copyright (c) 2017 Instapp. All rights reserved.
  */
 
-public class HLImageModule{
+public class ImageModule {
 
     public static final String PREVIEW = "image_preview";
-    public HLModuleResultListener mPreviewListener;
+    public ModuleResultListener mPreviewListener;
 
-    private static volatile HLImageModule instance = null;
+    private static volatile ImageModule instance = null;
     private Context mContext;
-    private HLImageModule(Context context){
+    private ImageModule(Context context){
         mContext = context;
         EventBus.getDefault().register(this);
     }
 
-    public static HLImageModule getInstance(Context context) {
+    public static ImageModule getInstance(Context context) {
         if (instance == null) {
-            synchronized (HLImageModule.class) {
+            synchronized (ImageModule.class) {
                 if (instance == null) {
-                    instance = new HLImageModule(context);
+                    instance = new ImageModule(context);
                 }
             }
         }
@@ -61,22 +61,42 @@ public class HLImageModule{
     }
 
     public void pick(Activity activity, HashMap<String, Object> param){
-        int limitCount = 9;
+        int limit = 9;
+        boolean showCamera = false;
+
+        // params
         if (param.containsKey("limit")) {
-            limitCount = (int) param.get("limit");
+            limit = (int) param.get("limit");
+            limit = (limit < 1) ? 1 : limit;
         }
-        MultiImageSelector.create(activity)
-                .showCamera(true)
-                .count(limitCount)
-                .multi()
-                .start(activity, HLConstant.HL_IMAGE_PICK_REQUEST_CODE);
+
+        if (param.containsKey("showCamera")) {
+            showCamera = (boolean) param.get("showCamera");
+        }
+
+        MultiImageSelector selector = MultiImageSelector.create(activity);
+
+        selector.showCamera(showCamera);
+        selector.count(limit);
+
+        if (limit == 1) {
+            selector.single();
+        } else {
+            selector.multi();
+        }
+
+        selector.start(activity, Constant.IMAGE_PICK_REQUEST_CODE);
     }
 
     public Object onPickActivityResult(int requestCode, int resultCode, Intent data){
-        if (requestCode == HLConstant.HL_IMAGE_PICK_REQUEST_CODE) {
-            if (resultCode != Activity.RESULT_OK) {
-                return HLUtil.getError(HLConstant.MEDIA_ABORTED, HLConstant.MEDIA_ABORTED_CODE);
+        if (requestCode == Constant.IMAGE_PICK_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_CANCELED) {
+                return null;
             }
+            else if (resultCode != Activity.RESULT_OK) {
+                return Util.getError(Constant.MEDIA_ABORTED, Constant.MEDIA_ABORTED_CODE);
+            }
+
             List<String> path = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
             HashMap<String, List<String>> result = new HashMap<String, List<String>>();
             result.put("paths", path);
@@ -86,7 +106,7 @@ public class HLImageModule{
         }
     }
 
-    public void preview(String[] files, HashMap<String, Object> param, HLModuleResultListener listener) {
+    public void preview(String[] files, HashMap<String, Object> param, ModuleResultListener listener) {
         mPreviewListener = listener;
 
         int currentIndex = 0;
@@ -105,7 +125,7 @@ public class HLImageModule{
         listener.onResult(null);
     }
 
-    public void info(final String path, final HLModuleResultListener listener) {
+    public void info(final String path, final ModuleResultListener listener) {
         if (path.startsWith("http://") || path.startsWith("https://")) {
             OkHttpClient okHttpClient = new OkHttpClient();
             final Request request = new Request.Builder().url(path).build();
@@ -120,7 +140,7 @@ public class HLImageModule{
 //                    options.inJustDecodeBounds = true;
                     Bitmap bitmap = BitmapFactory.decodeStream(is, null, options);
                     if (bitmap == null) {
-                        listener.onResult(HLUtil.getError(HLConstant.MEDIA_SRC_NOT_SUPPORTED, HLConstant.MEDIA_SRC_NOT_SUPPORTED_CODE));
+                        listener.onResult(Util.getError(Constant.MEDIA_SRC_NOT_SUPPORTED, Constant.MEDIA_SRC_NOT_SUPPORTED_CODE));
                         return;
                     }
                     String outMimeType = options.outMimeType;
@@ -141,7 +161,7 @@ public class HLImageModule{
 
                 @Override
                 public void onFailure(Request request, IOException e) {
-                    listener.onResult(HLUtil.getError(HLConstant.MEDIA_NETWORK_ERROR, HLConstant.MEDIA_ABORTED_CODE));
+                    listener.onResult(Util.getError(Constant.MEDIA_NETWORK_ERROR, Constant.MEDIA_ABORTED_CODE));
                 }
             });
         } else {
@@ -158,7 +178,7 @@ public class HLImageModule{
                 bitmap = BitmapFactory.decodeFile(path, options);
             }
             if (bitmap == null) {
-                listener.onResult(HLUtil.getError(HLConstant.MEDIA_SRC_NOT_SUPPORTED, HLConstant.MEDIA_SRC_NOT_SUPPORTED_CODE));
+                listener.onResult(Util.getError(Constant.MEDIA_SRC_NOT_SUPPORTED, Constant.MEDIA_SRC_NOT_SUPPORTED_CODE));
                 return;
             }
 
@@ -178,7 +198,7 @@ public class HLImageModule{
         }
     }
 
-    public void exif(String path, final HLModuleResultListener listener){
+    public void exif(String path, final ModuleResultListener listener){
         if (path.startsWith("http://") || path.startsWith("https://")) {
             OkHttpClient okHttpClient = new OkHttpClient();
             final Request request = new Request.Builder().url(path).build();
@@ -205,13 +225,13 @@ public class HLImageModule{
                         getPictureExif(file.getAbsolutePath(), listener);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        listener.onResult(HLUtil.getError(HLConstant.MEDIA_NETWORK_ERROR, HLConstant.MEDIA_NETWORK_ERROR_CODE));
+                        listener.onResult(Util.getError(Constant.MEDIA_NETWORK_ERROR, Constant.MEDIA_NETWORK_ERROR_CODE));
                     }
                 }
 
                 @Override
                 public void onFailure(Request request, IOException e) {
-                    listener.onResult(HLUtil.getError(HLConstant.MEDIA_NETWORK_ERROR, HLConstant.MEDIA_NETWORK_ERROR_CODE));
+                    listener.onResult(Util.getError(Constant.MEDIA_NETWORK_ERROR, Constant.MEDIA_NETWORK_ERROR_CODE));
                 }
             });
         } else {
@@ -220,7 +240,7 @@ public class HLImageModule{
 
     }
 
-    private void getPictureExif(String path, HLModuleResultListener listener) {
+    private void getPictureExif(String path, ModuleResultListener listener) {
         HashMap<String, Object> result = new HashMap<>();
 
         try {
@@ -231,6 +251,7 @@ public class HLImageModule{
                     ExifInterface.TAG_GPS_LONGITUDE_REF,
                     ExifInterface.TAG_GPS_PROCESSING_METHOD,
                     ExifInterface.TAG_IMAGE_WIDTH,
+                    ExifInterface.TAG_IMAGE_LENGTH,
                     ExifInterface.TAG_MAKE,
                     ExifInterface.TAG_MODEL
             };
@@ -386,7 +407,7 @@ public class HLImageModule{
             listener.onResult(result);
         } catch (IOException e) {
             e.printStackTrace();
-            listener.onResult(HLUtil.getError(HLConstant.MEDIA_SRC_NOT_SUPPORTED, HLConstant.MEDIA_SRC_NOT_SUPPORTED_CODE));
+            listener.onResult(Util.getError(Constant.MEDIA_SRC_NOT_SUPPORTED, Constant.MEDIA_SRC_NOT_SUPPORTED_CODE));
         }
     }
 
@@ -451,7 +472,7 @@ public class HLImageModule{
     @Subscribe
     public void onMessageEvent(MessageEvent messageEvent) {
         if (messageEvent.mType.equals(PREVIEW) && mPreviewListener != null) {
-            mPreviewListener.onResult(HLUtil.getError(messageEvent.mMsg, 1));
+            mPreviewListener.onResult(Util.getError(messageEvent.mMsg, 1));
         }
     }
 }

@@ -14,5 +14,5 @@
     <string name="mis_permission_dialog_cancel">CANCEL</string>
     <string name="mis_permission_rationale">Storage read permission is needed to pick files.</string>
     <string name="mis_permission_rationale_write_storage">Storage write permission is needed to save the image.</string>
-    <string name="app_name">media-image</string>
+    <string name="app_name">Media-image</string>
 </resources>

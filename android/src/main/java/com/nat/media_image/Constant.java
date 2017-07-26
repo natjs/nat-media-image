@@ -4,11 +4,11 @@ import android.os.Environment;
 
 /**
  * Created by xuqinchao on 17/1/10.
- * Copyright (c) 2017 Nat. All rights reserved.
+ * Copyright (c) 2017 Instapp. All rights reserved.
  */
 
-public class HLConstant {
-    public static final String HL_ROOT_PATH = Environment.getExternalStorageDirectory() + "/hl";
+public class Constant {
+    public static final String ROOT_PATH = Environment.getExternalStorageDirectory() + "/Instapp";
     public static final int DEFAULT_TIMEOUT_MS = 3000;
 
     //nat 自定义receiver的action
@@ -16,9 +16,9 @@ public class HLConstant {
     public static final String VIDEO_STOP_OPERATE = "video_stop";
 
     //nat activity result,request codeo
-    public static final int HL_IMAGE_REQUEST_CODE = 1001;
-    public static final int HL_VIDEO_REQUEST_CODE = 1002;
-    public static final int HL_IMAGE_PICK_REQUEST_CODE = 1003;
+    public static final int IMAGE_REQUEST_CODE = 1001;
+    public static final int VIDEO_REQUEST_CODE = 1002;
+    public static final int IMAGE_PICK_REQUEST_CODE = 1003;
 
     //nat动态权限request code
     public static final int CALL_PHONE_PERMISSION_REQUEST_CODE = 1501;
@@ -125,8 +125,8 @@ public class HLConstant {
     public static final int UPLOAD_INVALID_ARGUMENT_CODE = 153050;
     public static final int UPLOAD_NETWORK_ERROR_CODE = 153060;
 
-    //HL内部错误
-    public static final String HL_ERROR_NULL_CONTEXT = "Context对象不能为空";
+    //内部错误
+    public static final String ERROR_NULL_CONTEXT = "Context对象不能为空";
 
 
 }

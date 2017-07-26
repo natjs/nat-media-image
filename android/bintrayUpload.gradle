@@ -3,7 +3,7 @@ apply plugin: 'com.jfrog.bintray'
 
 //加载属性文件
 Properties properties = new Properties()
-File localPropertiesFile = project.file("bintray.properties");
+File localPropertiesFile = project.file("../bintray.properties");
 if (localPropertiesFile.exists()) {
     properties.load(localPropertiesFile.newDataInputStream())
 }

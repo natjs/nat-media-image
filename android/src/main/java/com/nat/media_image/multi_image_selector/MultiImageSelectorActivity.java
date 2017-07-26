@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import com.nat.media_image.R;
@@ -56,7 +57,7 @@ public class MultiImageSelectorActivity extends AppCompatActivity
         setContentView(R.layout.mis_activity_default);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(Color.BLACK);
+            getWindow().setStatusBarColor(0xFF222222);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
