@@ -6,9 +6,9 @@ android {
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 1
-        versionName "1.1.1"
+        versionName "1.1.3"
     }
     buildTypes {
         release {
@@ -24,10 +24,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.squareup.okhttp:okhttp:2.3.0'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:1.6.0'
-    compile 'com.squareup.okhttp:okhttp-ws:2.3.0'
     compile 'com.squareup.okio:okio:1.0.1'
-    compile 'com.squareup.picasso:picasso:2.4.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }
 
 apply from: 'bintrayUpload.gradle'
